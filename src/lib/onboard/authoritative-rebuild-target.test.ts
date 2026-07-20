@@ -148,6 +148,7 @@ describe("prepared provider reconfiguration handoff", () => {
         provider: "compatible-endpoint",
         model: "nvidia/model",
         endpointUrl: "https://inference.example.test/v1",
+        endpointSource: "onboard",
         preferredInferenceApi: "openai-completions",
         source: "registry",
       },
@@ -158,6 +159,7 @@ describe("prepared provider reconfiguration handoff", () => {
     });
     const flowContext = {
       ...providerTarget,
+      endpointSource: "onboard" as const,
       preferredInferenceApi: "openai-completions",
       session: { sessionId: "sess-alpha" },
     };
@@ -177,6 +179,16 @@ describe("prepared provider reconfiguration handoff", () => {
       { ...flowContext, sandboxName: "beta" },
     );
     expect(wrongSandbox.providerRecoveryReceipt).toBeNull();
+
+    const wrongEndpointSource = rebuildProviderFlowOptions(
+      {
+        ...authorizedOptions,
+        providerRecoveryReceipt: receipt,
+        rebuildProviderReconfigure: undefined,
+      },
+      { ...flowContext, endpointSource: "inference-set" },
+    );
+    expect(wrongEndpointSource.providerRecoveryReceipt).toBeNull();
   });
 
   it("rejects an unauthorized or mismatched handoff (#6114)", () => {

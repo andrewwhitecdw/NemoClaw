@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
+import type { InferenceEndpointSource } from "../inference/selection";
 import { findDashboardForwardOwner } from "./dashboard-port";
 import { resolveGatewayName } from "./gateway-binding";
 import type { PortProbeResult } from "./preflight";
@@ -116,6 +117,7 @@ export function rebuildProviderFlowOptions(
   opts: OnboardOptions,
   target: Parameters<typeof validateRebuildHandoff>[1] & {
     session?: { sessionId: string } | null;
+    endpointSource?: InferenceEndpointSource | null;
     preferredInferenceApi?: string | null;
   },
 ): {
@@ -156,6 +158,7 @@ export function rebuildProviderFlowOptions(
               provider: target.provider,
               model: target.model,
               endpointUrl: target.endpointUrl ?? null,
+              endpointSource: target.endpointSource ?? null,
               preferredInferenceApi: target.preferredInferenceApi ?? "",
               source: "registry",
             },
